@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#FFF9E3] flex items-center justify-center min-height-screen p-6">
+
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Sign In</h1>
+        
+        <form id="signInForm" action="/signin" method="POST" onsubmit="return confirmForm()" class="space-y-4">
+            
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">ชื่อ-นามสกุล:</label>
+                <input type="text" id="username" name="username" required 
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
+            </div>
+
+            <div>
+                <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-1">วันเกิด:</label>
+                <input type="date" id="birthdate" name="birthdate" required 
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="sex" class="block text-sm font-medium text-gray-700 mb-1">เพศ:</label>
+                    <select id="sex" name="sex" required class="w-full border border-gray-300 rounded-md px-3 py-2 outline-none">
+                        <option value="">เลือกเพศ</option>
+                        <option value="male">ชาย</option>
+                        <option value="female">หญิง</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="religion" class="block text-sm font-medium text-gray-700 mb-1">ศาสนา:</label>
+                    <select id="religion" name="religion" required class="w-full border border-gray-300 rounded-md px-3 py-2 outline-none">
+                        <option value="">เลือกศาสนา</option>
+                        <option value="buddhism">พุทธ</option>
+                        <option value="islam">อิสลาม</option>
+                        <option value="christianity">คริสต์</option>
+                        <option value="hinduism">ฮินดู</option>
+                        <option value="other">อื่นๆ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-700 mb-1">ที่อยู่:</label>
+                <textarea name="address" id="address" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"></textarea>
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">อีเมล:</label>
+                <input type="email" id="email" name="email" required 
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+            </div>
+
+            <div>
+                <label for="number" class="block text-sm font-medium text-gray-700 mb-1">เบอร์โทรศัพท์:</label>
+                <input type="text" id="number" name="number" required 
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+            
+            </div>
+            <div>
+                <label for="hobby" class="block text-sm font-medium text-gray-700 mb-1">งานอดิเรก:</label>
+                <textarea name="hobby" id="hobby " required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"></textarea></div>
+
+            <div class="flex gap-2 pt-4">
+                <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition font-semibold">Sign In</button>
+                <button type="reset" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition">Reset</button>
+            </div>
+            
+        </form>
+    </div>
+
+    <script>
+        // ตั้งค่าให้เลือกวันเกิดไม่เกินวันที่ปัจจุบัน
+        document.addEventListener('DOMContentLoaded', () => {
+            const birthEl = document.getElementById('birthdate');
+            if (birthEl) {
+                const today = new Date().toISOString().split('T')[0];
+                birthEl.max = today;
+            }
+        });
+
+        function confirmForm() {
+            const name = document.getElementById('username').value.trim();
+            const birth = document.getElementById('birthdate').value;
+            const phone = document.getElementById('number').value.trim();
+
+            // ตรวจสอบชื่อ-นามสกุลเป็นภาษาไทย (ช่องว่างอนุญาต)
+            const thaiRegex = /^[\u0E00-\u0E7F\s]+$/u;
+            if (!thaiRegex.test(name)) {
+                alert('กรุณากรอก ชื่อ-นามสกุล เป็นภาษาไทยเท่านั้น');
+                document.getElementById('username').focus();
+                return false;
+            }
+
+            // ตรวจสอบวันเกิดไม่เกินวันที่ปัจจุบัน
+            const today = new Date().toISOString().split('T')[0];
+            if (birth > today) {
+                alert('วันเกิดต้องไม่เกินวันที่ปัจจุบัน');
+                document.getElementById('birthdate').focus();
+                return false;
+            }
+
+            // ตรวจสอบเบอร์โทรเป็นตัวเลขเท่านั้น
+            const digitsOnly = /^\d+$/;
+            if (!digitsOnly.test(phone)) {
+                alert('เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น');
+                document.getElementById('number').focus();
+                return false;   
+            }
+
+            // ตรวจสอบความยาวของเบอร์โทร (ต้อง 10 หลัก)
+            if (phone.length !== 10) {
+                alert('เบอร์โทรศัพท์ต้องมีทั้งหมด 10 หลัก');
+                document.getElementById('number').focus();
+                return false;
+            }
+
+            alert("ขอบคุณที่ลงทะเบียน! ระบบกำลังส่งข้อมูลของคุณ");
+            return true;
+        }
+    </script>
+</body>
+</html>
